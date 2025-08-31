@@ -14,7 +14,9 @@ def input_to_lists(infile):
         # elif payment > 0:
             # add (name, float(payment)) entry to receivers list
         # else:
-            # how to handle 0 payments? come back to this when other parts are designed
+            # skip - net 0 not included in payout calculation since no action is needed
+            # if args.verbose:
+                # print(name +  " has net earnings of 0 - skipped")
     # close file
     # return (payers, receivers)
 
