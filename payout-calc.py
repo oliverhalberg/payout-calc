@@ -2,15 +2,16 @@
 
 import argparse
 
-def input_to_dict(infile):
+def input_to_lists(infile):
     print("Not yet implemented")
 
     # open file
     # for each line of file:
+        # split on ',' to get name and payment
         # if payment < 0:
-            # add name:payment entry to payers dict
+            # add (name, payment) entry to payers list
         # elif payment > 0:
-            # add name:payment entry to receivers dict
+            # add (name, payment) entry to receivers list
         # else:
             # how to handle 0 payments? come back to this when other parts are designed
     # close file
@@ -21,9 +22,18 @@ def main():
     infile = args.data
     outfile = args.destination
 
-    # dicts = input_to_dict(infile)
-    # payers = dicts[0]
-    # receivers = dicts[1]
+    # bring in and sort lists
+    # lists = input_to_lists(infile)
+    # payers = lists[0].sort(key = lambda payer: payer[1], reverse=True)
+    # receivers = lists[1].sort(key = lambda receiver: receiver[1])
+
+    # check that len(payers) == len(receivers), exit if False
+
+    # open outfile for writing
+
+    # 
+
+
 
     print("to implement")
     if (args.verbose):
