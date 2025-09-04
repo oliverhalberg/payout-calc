@@ -3,18 +3,38 @@
 import argparse
 
 def input_to_lists(infile):
-    print("Not yet implemented")
+
+    payers = []
+    receivers = []
 
     # open file
+    with open(infile, 'r') as file:
+        for line in file:
+            # split on ',' to get name and earnings
+            split_line = line.split(',')
+            try:
+                earnings = float(split_line[1])
+                name = split_line[0]
+                
+                if earnings < 0:
+                    payers.append((name, earnings))
+                elif earnings > 0:
+                    receivers.append((name, earnings))
+                else:
+                    # skip - net 0 not included in payout calculation since no action is needed
+                    if args.verbose:
+                        print(name + " has net earnings of 0 - skipped")
+            except ValueError:
+                # if payment can't parse to a float, skip to next line (allows header lines to be bypassed)
+                continue
+    return (payers, receivers)
+
     # for each line of file:
-        # split on ',' to get name and payment
-        # if payment can't parse to a float, skip to next line (allows header lines to be bypassed)
         # if payment < 0:
             # add (name, float(payment)) entry to payers list
         # elif payment > 0:
             # add (name, float(payment)) entry to receivers list
         # else:
-            # skip - net 0 not included in payout calculation since no action is needed
             # if args.verbose:
                 # print(name +  " has net earnings of 0 - skipped")
     # close file
@@ -46,7 +66,7 @@ def main():
 
     # check that sum(payers[1]) == sum(receivers[1]), exit if False
 
-    # open outfile for writing
+    #output = ""
 
     # while len(payers) != 0:
         # current_payer = payers[0]
@@ -74,8 +94,10 @@ def main():
         # out = current_payer[0] + " pays " + current_receiver[0] + " " + currency + amount
         # if args.verbose:
             # print(out)
-        # write out to file
+        # output += out
 
+    # open outfile for writing
+    # write output to file
     # close file
     # print("Done")
 
