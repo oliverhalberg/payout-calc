@@ -59,51 +59,64 @@ def main():
     if args.verbose:
         print("Processing data...")
 
-    # bring in and sort lists
-    # lists = input_to_lists(infile)
-    # payers = lists[0].sort(key = lambda payer: payer[1])
-    # receivers = lists[1].sort(key = lambda receiver: receiver[1], reverse=True) # reverse is bigger values first
+    # bring in and sort lists of tuples
+    lists = input_to_lists(infile)
+    payers = lists[0].sort(key = lambda payer: payer[1])
+    receivers = lists[1].sort(key = lambda receiver: receiver[1], reverse=True) # reverse is bigger values first
 
     # check that sum(payers[1]) == sum(receivers[1]), exit if False
+    sum_payers = sum([x[1] for x in payers])
+    sum_receivers = sum([x[1] for x in receivers])
+    if sum_payers != sum_receivers:
+        print("Something went wrong - the total sum to be paid is not the same as the total sum to be received. Please check your input data.")
+        return
+    
+    # List of strings to write to outfile
+    output = []
 
-    #output = ""
-
-    # while len(payers) != 0:
-        # current_payer = payers[0]
-        # current_receiver = receivers[0]
-
-        # amount = 0 # placeholder
-        # if (abs(current_payer[1]) > current_receiver[1]):
-            # amount = current_receiver[1]
+    while len(payers) != 0:
+        current_payer = payers[0]
+        current_receiver = receivers[0]
+        amount = 0 # placeholder
+        
+        if (abs(current_payer[1]) >= current_receiver[1]):
+            amount = current_receiver[1] # amount is what the receiver is owed
             
-        # elif (abs(current_payer[1]) < current_receiver[1]):
-            # 
+        elif (abs(current_payer[1]) < current_receiver[1]):
+            amount = abs(current_payer[1]) # amount is what the payer can pay
 
-        # current_payer[1] = current_payer[1] + amount
-        # current_receiver[1] = current_receiver[1] - amount
-        # if (current_payer[1] == 0):
-            # payers.remove(0)
-        # else:
-            # payers[0] = current_payer
-        # if (curent_receiver[1] == 0):
-            # receivers.remove(0)
-        # else:
-            # receivers[0] = current_receiver
+        # payout occurs
+        current_payer[1] = current_payer[1] + amount
+        current_receiver[1] = current_receiver[1] - amount
+
+        if (current_payer[1] == 0):
+            payers.remove(0)
+        else:
+            payers[0] = current_payer
+        if (current_receiver[1] == 0):
+            receivers.remove(0)
+        else:
+            receivers[0] = current_receiver
         
         #output:
-        # out = current_payer[0] + " pays " + current_receiver[0] + " " + currency + amount
-        # if args.verbose:
-            # print(out)
-        # output += out
+        out = current_payer[0] + " pays " + current_receiver[0] + " " + currency + amount
+        if args.verbose:
+            print(out)
+        output.append(out)
+
+    with open(outfile, 'w') as output_file:
+        for line in output:
+            output_file.write(line + "\n")
+    print("Done!")
 
     # open outfile for writing
     # write output to file
     # close file
     # print("Done")
 
-    print("to implement")
-    if args.verbose:
-        print("vvvv tester code")
+    # print("to implement")
+    # if args.verbose:
+    #     print("vvvv tester code")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
