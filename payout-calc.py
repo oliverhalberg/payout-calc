@@ -61,12 +61,24 @@ def main():
 
     # bring in and sort lists of tuples
     lists = input_to_lists(infile)
-    payers = lists[0].sort(key = lambda payer: payer[1])
-    receivers = lists[1].sort(key = lambda receiver: receiver[1], reverse=True) # reverse is bigger values first
+    payers = sorted(lists[0], key = lambda payer: payer[1])
+    receivers = sorted(lists[1],key = lambda receiver: receiver[1], reverse=True) # reverse is bigger values first
+
+    # debug print statements
+    print(payers)
+    print(receivers)
 
     # check that sum(payers[1]) == sum(receivers[1]), exit if False
-    sum_payers = sum([x[1] for x in payers])
+    sum_payers = sum([abs(x[1]) for x in payers])
     sum_receivers = sum([x[1] for x in receivers])
+
+    # sum_payers = 0
+    # sum_receivers = 0
+    # for payer in payers:
+    #     sum_payers += payer[1]
+    # for receiver in receivers:
+    #     sum_receivers += receiver[1]
+
     if sum_payers != sum_receivers:
         print("Something went wrong - the total sum to be paid is not the same as the total sum to be received. Please check your input data.")
         return
@@ -74,32 +86,41 @@ def main():
     # List of strings to write to outfile
     output = []
 
-    while len(payers) != 0:
+    while len(payers) != 0 and len(receivers) != 0:
         current_payer = payers[0]
         current_receiver = receivers[0]
         amount = 0 # placeholder
         
         if (abs(current_payer[1]) >= current_receiver[1]):
             amount = current_receiver[1] # amount is what the receiver is owed
-            
         elif (abs(current_payer[1]) < current_receiver[1]):
             amount = abs(current_payer[1]) # amount is what the payer can pay
 
         # payout occurs
-        current_payer[1] = current_payer[1] + amount
-        current_receiver[1] = current_receiver[1] - amount
 
-        if (current_payer[1] == 0):
-            payers.remove(0)
+        updated_payer = current_payer[1] + amount
+        updated_receiver = current_receiver[1] - amount
+
+        # current_payer[1] = current_payer[1] + amount
+        # current_receiver[1] = current_receiver[1] - amount
+
+        if updated_payer == 0 and updated_receiver == 0:
+            payers.pop(0)
+            receivers.pop(0)
+        elif updated_payer == 0:
+            payers.pop(0)
+            receivers.insert(0, (current_receiver[0], updated_receiver))
+        elif updated_receiver == 0:
+            receivers.pop(0)
+            payers.insert(0, (current_payer[0], updated_payer))
         else:
-            payers[0] = current_payer
-        if (current_receiver[1] == 0):
-            receivers.remove(0)
-        else:
-            receivers[0] = current_receiver
+            payers.insert(0, (current_payer[0], updated_payer))
+            receivers.insert(0, (current_receiver[0], updated_receiver))
+        print(payers)
+        print(receivers)
         
         #output:
-        out = current_payer[0] + " pays " + current_receiver[0] + " " + currency + amount
+        out = current_payer[0] + " pays " + current_receiver[0] + " " + currency + str(amount)
         if args.verbose:
             print(out)
         output.append(out)
@@ -121,7 +142,7 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--verbose", help="run program in verbose mode", action="store_true")
-    parser.add_argument("-c", "--currency", help="optional currency sign for output - d for USD/CAD, e for euros, p for GBP, y for yen", choices=['d', 'e', 'p', 'y'], default='')
+    parser.add_argument("-c", "--currency", help="optional currency sign for output: d for USD/CAD, e for euros, p for GBP, y for yen", choices=['d', 'e', 'p', 'y'], default='')
     parser.add_argument("data", help="the .csv file to read from. there should be two columns: one with names and one with corresponding net earnings. see README.md for an example")
     parser.add_argument("destination", help="the file path to write output to")
     args = parser.parse_args()
