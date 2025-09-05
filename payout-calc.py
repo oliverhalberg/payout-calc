@@ -54,9 +54,9 @@ def main():
     payers = sorted(lists[0], key = lambda payer: payer[1], reverse=True)
     receivers = sorted(lists[1],key = lambda receiver: receiver[1], reverse=True) # reverse is bigger values first
 
-    # debug print statements
-    # print(payers)
-    # print(receivers)
+    if args.debug:
+        print(payers)
+        print(receivers)
 
     # check that sum(payers[1]) == sum(receivers[1]), exit if False
     sum_payers = sum([x[1] for x in payers])
@@ -93,9 +93,9 @@ def main():
         updated_payer = current_payer[1] - amount
         updated_receiver = current_receiver[1] - amount
 
-        #debug
-        # print("updated payer: " + str(updated_payer))
-        # print("updated receiver: " + str(updated_receiver))
+        if args.debug:
+            print("updated payer: " + str(updated_payer))
+            print("updated receiver: " + str(updated_receiver))
 
         
         if updated_payer == 0:
@@ -114,9 +114,9 @@ def main():
             print(out)
         output.append(out)
 
-        #debug
-        # print(payers)
-        # print(receivers)
+        if args.debug:
+            print(payers)
+            print(receivers)
 
     with open(outfile, 'w') as output_file:
         for line in output:
@@ -126,9 +126,10 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-v", "--verbose", help="run program in verbose mode", action="store_true")
+    parser.add_argument("-v", "--verbose", help="run program with verbose output", action="store_true")
     parser.add_argument("-c", "--currency", help="optional currency sign for output: d for USD/CAD, e for euros, p for GBP, y for yen", choices=['d', 'e', 'p', 'y'], default='')
-    parser.add_argument("-o", "--optimize", help="optimize for cleaner output at the cost of slower performance.", action="store_true")
+    parser.add_argument("-o", "--optimize", help="optimize output at the cost of performance.", action="store_true")
+    parser.add_argument("-d", "--debug", help="prints snapshots of the current state as it runs. enable only when debugging. debug output is not written to the output file.", action="store_true")
     parser.add_argument("data", help="the .csv file to read from. there should be two columns: one with names and one with corresponding net earnings. see README.md for an example")
     parser.add_argument("destination", help="the file path to write output to")
     args = parser.parse_args()
