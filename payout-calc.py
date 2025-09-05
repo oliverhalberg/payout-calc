@@ -70,11 +70,19 @@ def main():
     # List of strings to write to outfile
     output = []
 
-    while len(payers) != 0 and len(receivers) != 0:
-        current_payer = payers.pop(0)
+    while len(payers) != 0:
         current_receiver = receivers.pop(0)
+        current_payer = ()
+        index = 0
+
+        if args.optimize:
+            for i in range(len(payers)):
+                if payers[i][1] == current_receiver[1]:
+                    index = i
+                    break
+        current_payer = payers.pop(index)
+
         amount = 0 # placeholder
-        
         if (current_payer[1] >= current_receiver[1]):
             amount = current_receiver[1] # amount is what the receiver is owed
         elif (abs(current_payer[1]) < current_receiver[1]):
@@ -89,8 +97,10 @@ def main():
         # print("updated payer: " + str(updated_payer))
         # print("updated receiver: " + str(updated_receiver))
 
+        
         if updated_payer == 0:
-            receivers.insert(0, (current_receiver[0], updated_receiver))
+            if updated_receiver != 0:
+                receivers.insert(0, (current_receiver[0], updated_receiver))
         elif updated_receiver == 0:
             payers.insert(0, (current_payer[0], updated_payer))
         else:
@@ -118,6 +128,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", "--verbose", help="run program in verbose mode", action="store_true")
     parser.add_argument("-c", "--currency", help="optional currency sign for output: d for USD/CAD, e for euros, p for GBP, y for yen", choices=['d', 'e', 'p', 'y'], default='')
+    parser.add_argument("-o", "--optimize", help="optimize for cleaner output at the cost of slower performance.", action="store_true")
     parser.add_argument("data", help="the .csv file to read from. there should be two columns: one with names and one with corresponding net earnings. see README.md for an example")
     parser.add_argument("destination", help="the file path to write output to")
     args = parser.parse_args()
