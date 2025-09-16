@@ -24,7 +24,7 @@ The program also accepts several optional parameters:
 
 
 ## Example Input File
-- Input files should be structured like the following example and should be in `.csv` format. Losses should be recorded as negative numbers. An example .csv file (`example_input.csv`) is included in the repository. Header lines or other lines not containing numerical data in the second column will be skipped.
+- Input files should be structured like the following example and should be in `.csv` format. Losses should be recorded as negative numbers. An example .csv file (`example_input.csv`) containing this same data is included in the repository. Header lines or other lines not containing numerical data in the second column will be skipped.
 
 <table>
 <tr>
