@@ -49,7 +49,7 @@ def main():
     if args.verbose:
         print("Processing data...")
 
-    # bring in and sort lists of tuples
+    # Bring in and sort lists of tuples
     lists = input_to_lists(infile)
     payers = sorted(lists[0], key = lambda payer: payer[1], reverse=True)
     receivers = sorted(lists[1],key = lambda receiver: receiver[1], reverse=True) # reverse is bigger values first
@@ -58,11 +58,9 @@ def main():
         print(payers)
         print(receivers)
 
-    # check that sum(payers[1]) == sum(receivers[1]), exit if False
+    # Sanity check: check that sum(payers[1]) == sum(receivers[1]), exit if False
     sum_payers = sum([x[1] for x in payers])
     sum_receivers = sum([x[1] for x in receivers])
-
-
     if sum_payers != sum_receivers:
         print("Something went wrong - the total sum to be paid is not the same as the total sum to be received. Please check your input data.")
         return
@@ -76,10 +74,14 @@ def main():
         index = 0
 
         if args.optimize:
+            # Note to self: I could technically make this more optimized by implementing something like
+            # a binary search, since it's a sorted list, but this program will most likely only be used
+            # with small data sets, so it's fine.
             for i in range(len(payers)):
                 if payers[i][1] == current_receiver[1]:
                     index = i
                     break
+
         current_payer = payers.pop(index)
 
         amount = 0 # placeholder
@@ -88,7 +90,7 @@ def main():
         elif (abs(current_payer[1]) < current_receiver[1]):
             amount = current_payer[1] # amount is what the payer can pay
 
-        # payout occurs
+        # Payout occurs
 
         updated_payer = current_payer[1] - amount
         updated_receiver = current_receiver[1] - amount
@@ -97,9 +99,9 @@ def main():
             print("updated payer: " + str(updated_payer))
             print("updated receiver: " + str(updated_receiver))
 
-        
-        if updated_payer == 0:
-            if updated_receiver != 0:
+
+        # Update data structures
+        if updated_payer == 0 and updated_receiver != 0:
                 receivers.insert(0, (current_receiver[0], updated_receiver))
         elif updated_receiver == 0:
             payers.insert(0, (current_payer[0], updated_payer))
@@ -108,7 +110,7 @@ def main():
             receivers.insert(0, (current_receiver[0], updated_receiver))
         
         
-        #output:
+        #Output:
         out = current_payer[0] + " pays " + current_receiver[0] + " " + currency + str(amount)
         if args.verbose:
             print(out)
@@ -118,6 +120,7 @@ def main():
             print(payers)
             print(receivers)
 
+    # Write program result to the output file
     with open(outfile, 'w') as output_file:
         for line in output:
             output_file.write(line + "\n")
