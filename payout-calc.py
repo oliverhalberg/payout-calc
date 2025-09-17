@@ -68,23 +68,60 @@ def main():
     # List of strings to write to outfile
     output = []
 
+    current_receiver = ()
+    current_payer = ()
+
+    amount = 0 # placeholder
+
+    # First step of optimization: anyone who owes the exact amount that someone else is owed pays that person
+    if args.optimize:
+        # Note to self: I could technically make this more optimized by implementing something like
+        # a binary search, since it's a sorted list, but this program will most likely only be used
+        # with small data sets, so it's fine.
+        
+        i = len(payers) - 1
+        # go through all payers
+        while i >= 0:
+            # for each payer, go through all receivers
+            j = len(receivers) -1
+            while j >= 0:
+                # if there's a match, remove them from the lists and record the payment
+                if payers[i][1] == receivers[j][1]:  
+
+                    current_payer = payers.pop(i)
+                    current_receiver = receivers.pop(j)
+
+                    amount = current_payer[1]
+
+                    out = current_payer[0] + " pays " + current_receiver[0] + " " + currency + str(amount)
+                    
+                    if args.verbose:
+                        print(out)
+                    output.append(out)
+
+                    if args.debug:
+                        print(payers)
+                        print(receivers)
+                j -= 1
+            i -= 1
+
+    # Main loop (with or without optimization)
     while len(payers) != 0 and len(receivers) != 0:
         current_receiver = receivers.pop(0)
         current_payer = ()
-        index = 0
+        payer_index = 0
 
+        # Second step of optimization: check for any exact matches to what the current receiver is owed among remaining payers
         if args.optimize:
-            # Note to self: I could technically make this more optimized by implementing something like
-            # a binary search, since it's a sorted list, but this program will most likely only be used
-            # with small data sets, so it's fine.
+            # This could be more efficient (see above) but it's ok for the data size I'm expecting this to be run wih
             for i in range(len(payers)):
                 if payers[i][1] == current_receiver[1]:
-                    index = i
+                    payer_index = i
                     break
 
-        current_payer = payers.pop(index)
+        current_payer = payers.pop(payer_index)
 
-        amount = 0 # placeholder
+        
         if (current_payer[1] >= current_receiver[1]):
             amount = current_receiver[1] # amount is what the receiver is owed
         elif (abs(current_payer[1]) < current_receiver[1]):
@@ -104,6 +141,7 @@ def main():
         if updated_payer == 0:
             if updated_receiver != 0:
                 receivers.insert(0, (current_receiver[0], updated_receiver))
+            # if both are 0, do nothing
         elif updated_receiver == 0:
             payers.insert(0, (current_payer[0], updated_payer))
         else:
