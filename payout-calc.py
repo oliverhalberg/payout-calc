@@ -68,7 +68,7 @@ def main():
     # List of strings to write to outfile
     output = []
 
-    while len(payers) != 0:
+    while len(payers) != 0 and len(receivers) != 0:
         current_receiver = receivers.pop(0)
         current_payer = ()
         index = 0
@@ -101,7 +101,8 @@ def main():
 
 
         # Update data structures
-        if updated_payer == 0 and updated_receiver != 0:
+        if updated_payer == 0:
+            if updated_receiver != 0:
                 receivers.insert(0, (current_receiver[0], updated_receiver))
         elif updated_receiver == 0:
             payers.insert(0, (current_payer[0], updated_payer))
