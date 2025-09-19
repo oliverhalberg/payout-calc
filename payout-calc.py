@@ -102,6 +102,8 @@ def main():
                     if args.debug:
                         print(payers)
                         print(receivers)
+                    j -= 1
+                    break
                 j -= 1
             i -= 1
 
