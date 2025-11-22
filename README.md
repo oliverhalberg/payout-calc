@@ -3,6 +3,10 @@
 ## About this program
 `payout-calc.py` is a command-line program designed to calculate payouts for gambling/betting pools or similar situations when provided with a list of overall earnings and losses. It will generate a `.txt` file listing each step of the payout - who pays whom and how much. 
 
+### Known Issues and Limitations
+- Scalability: At multiple points in the program, lists are searched sequentially. This program is only expected to run on small data sets (such as with less than 100 total payers and receivers), and performance issues may appear with large data sets. All testing so far has used data sets with less than 20 total payers and receivers.
+- Inputs: At this time, only one input format is accepted (as shown below and in `example_input.csv`).
+
 ## Usage
 
 ### Requirements
